@@ -27,7 +27,7 @@ class Point {
     x: number
     y: number
     radius: number
-    constructor(x: number, y: number, radius: number = 2) {
+    constructor(x: number, y: number, radius: number = 4) {
         this.x = x
         this.y = y
         this.radius = radius
@@ -39,7 +39,7 @@ class Point {
     draw(): void {
         c.beginPath()
         c.arc(this.x, this.y, this.radius, 0, 2 * Math.PI)
-        c.fillStyle = 'rgba(0, 0, 0, 1)'
+        c.fillStyle = 'rgba(255, 164, 0, 1)'
         c.fill()
         c.fillStyle = 'white'
     }
@@ -66,7 +66,8 @@ class Ray {
 
         const d = (Math.atan(this.r.y / (this.r.x || 0.000001)) + (Math.PI * 2)) % (Math.PI * 2)
 
-        if (this.r.y <= 0 && this.r.x <= 0) this.d = d + Math.PI
+        if (this.r.y <= 0 && this.r.x === 0) this.d = d
+        if (this.r.y <= 0 && this.r.x < 0) this.d = d + Math.PI
         else if (this.r.y > 0 && this.r.x < 0) this.d = d - Math.PI
         else this.d = d
     }
@@ -157,11 +158,13 @@ class Scene {
     addShapes(s: Shape[]): void {
         this.shapes.push(...s)
     }
-    threePoints(p1: Point, p2: Point): Ray[] {
+    fivePoints(p1: Point, p2: Point): Ray[] {
         return [
             new Ray(p1, p2),
+            new Ray(p1, new Point(p2.x + 0.002, p2.y + 0.001)),
             new Ray(p1, new Point(p2.x + 0.001, p2.y + 0.001)),
             new Ray(p1, new Point(p2.x - 0.001, p2.y - 0.001)),
+            new Ray(p1, new Point(p2.x - 0.002, p2.y - 0.001)),
         ]
     }
     draw(): void {
@@ -174,11 +177,11 @@ class Scene {
 
             const rays = this.shapes.reduce((prev, p) => [
                 ...prev,
-                ...p.points.reduce((prev, c) => [...prev, ...this.threePoints(mouseBuddy, c)], []),
+                ...p.points.reduce((prev, c) => [...prev, ...this.fivePoints(mouseBuddy, c)], []),
             ], [])
 
             const points = rays.sort((a, b) => a.d - b.d).map(r => r.findClosest(this.shapes))
-            
+
             const color = i ? 'rgba(255, 255, 255, 0.2)' : 'white'
             new Shape(points, false).draw(true, color)
         })
