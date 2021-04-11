@@ -11,12 +11,36 @@
             margin: 0;
             padding: 0;
         }
+
+        button {
+            cursor: pointer;
+            box-shadow: 0 8px 12px -4px rgb(130 136 148 / 24%), 0 0 4px 0 rgb(141 141 148 / 16%), 0 0 2px 0 rgb(141 141 148 / 12%);
+            border-radius: 6px;
+            border: 0;
+            height: 35px;
+            font-size: 20px;
+            font-family: \'Inter\';
+            font-weight: bold;
+            letter-spacing: 2px;
+            background-color: cadetblue;
+            color: white;
+            transition: 0.2s all;
+        }
+
+        button:focus {
+            outline: none;
+        }
+
+        button:hover {
+            transform: scale(1.2);
+        }
     </style>
     <title>Document</title>
 </head>
 
 <body>
     <canvas></canvas>
+    <button>Click me to switch modes</button>
 </body>
 
 </html>

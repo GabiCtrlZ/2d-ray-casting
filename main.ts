@@ -1,6 +1,14 @@
 const canvas = document.querySelector('canvas')
 const c = canvas.getContext('2d')
 
+/* ---- variables ---- */
+
+let sunState = false
+document.querySelector('button').onclick = () => {
+    sunState = !sunState
+    console.log(sunState)
+}
+
 /* ---- consts ---- */
 
 canvas.width = 1000
@@ -33,8 +41,8 @@ class Point {
         this.radius = radius
     }
     set(x: number, y: number): void {
-        this.x = x
-        this.y = y
+        this.x = Math.min(x, canvas.width - 10)
+        this.y = Math.min(y, canvas.height - 10)
     }
     draw(): void {
         c.beginPath()
@@ -171,6 +179,22 @@ class Scene {
         c.fillStyle = 'black'
         c.fillRect(0, 0, canvas.width, canvas.height)
         this.shapes.forEach(s => s.draw())
+
+        if (sunState) {
+            const LIMIT = 270
+
+            const sunRays = []
+
+            for (let i = 1; i <= LIMIT; i++) {
+                const d = 2 * i * (Math.PI / LIMIT)
+                sunRays.push(new Ray(this.mouse, new Point(this.mouse.x + Math.cos(d), this.mouse.y + Math.sin(d))))
+            }
+            const sunPoints = sunRays.map(r => r.findClosest(this.shapes))
+            sunPoints.forEach(p => {
+                new Shape([p, this.mouse]).draw()
+            })
+            return
+        }
 
         mouseBuddies.forEach((dir, i) => {
             const mouseBuddy = new Point(this.mouse.x + dir[0], this.mouse.y + dir[1])
