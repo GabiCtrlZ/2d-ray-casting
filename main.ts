@@ -139,7 +139,7 @@ class Shape {
         c.beginPath()
         c.moveTo(points[points.length - 1].x, points[points.length - 1].y)
         points.forEach(({ x, y }) => c.lineTo(x, y))
-        c.stroke()
+        if (!withFill) c.stroke()
         if (withFill) c.fill()
     }
 }
